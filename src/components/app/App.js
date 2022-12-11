@@ -1,3 +1,4 @@
+import React from "react";
 import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
@@ -18,7 +19,7 @@ const App = () => {
                 <img className="bg-decoration" src={decoration} alt="vision"/>
             </main>
         </div>
-    )
+    )  
 }
 
 export default App;
