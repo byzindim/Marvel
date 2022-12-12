@@ -25,6 +25,7 @@ class CharInfo extends React.Component {
             this.updateChar();
         }
     }
+
     updateChar = () => {
         const { charId } = this.props;
         if(!charId) {
@@ -68,39 +69,47 @@ class CharInfo extends React.Component {
 
 const View = ({char}) => {
     const {name, description, thumbnail, homepage, wiki, comics} = char;
-    return (
-        <>
-        <div className="char__basics">
-                    <img src={thumbnail} alt={name}/>
-                    <div>
-                        <div className="char__info-name">{name}</div>
-                        <div className="char__btns">
-                            <a href= {homepage} className="button button__main">
-                                <div className="inner">homepage</div>
-                            </a>
-                            <a href={wiki} className="button button__secondary">
-                                <div className="inner">Wiki</div>
-                            </a>
+    const imgClassName = 'char__basics';
+    const imgClassNameChange = `${imgClassName}__change`;
+    if(comics.length > 0) {
+        return (
+            <>
+            <div className={(thumbnail.indexOf('http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') > -1) ? imgClassNameChange : imgClassName}>
+                        <img src={thumbnail} alt={name} />
+                        <div>
+                            <div className="char__info-name">{name}</div>
+                            <div className="char__btns">
+                                <a href= {homepage} className="button button__main">
+                                    <div className="inner">homepage</div>
+                                </a>
+                                <a href={wiki} className="button button__secondary">
+                                    <div className="inner">Wiki</div>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="char__descr">{description}</div>
-                <div className="char__comics">Comics:</div>
-                <ul className="char__comics-list">
-                    {
-                        comics.map((item, i) => {
-                            return (
-                                <li key = {i} className="char__comics-item">
-                                    {item.name}
-                                </li>
-                            )
-                        })
-                    }
-                    
-                    
-                </ul>
-            </>
-    )
+                    <div className="char__descr">{description}</div>
+                    <div className="char__comics">Comics:</div>
+                    <ul className="char__comics-list">
+                        {
+                            comics.map((item, i) => {
+                                if(i >8) return;
+                                return (
+                                    <li key = {i} className="char__comics-item">
+                                        {item.name}
+                                    </li>
+                                )
+                            })
+                        }
+                        
+                        
+                    </ul>
+                </>
+        )
+    } else {
+        return <h1>This char dosent comics</h1>;
+    }
+    
 
 }
 

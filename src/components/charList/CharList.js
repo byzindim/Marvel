@@ -8,19 +8,37 @@ class CharList extends React.Component {
     state = {
         charList: [],
         loader: true,
-        error: false
+        error: false,
+        newItemLoading: false,
+        offset: 210,
     }
     marvelService = new MarvelService();
 
     
     componentDidMount () {
-        this.marvelService
-        .getAllCharacters()
-        .then(this.onCharList)
-        .catch(this.onError)
+        this.onRequest();
+        
     }
-    onCharList = (charList) => {
-        this.setState({charList, loader: false})
+    onCharListLoading = () => {
+        this.setState({
+            newItemLoading: true
+        })
+    }
+    onRequest = (offset) => {
+        this.onCharListLoading();
+        this.marvelService
+            .getAllCharacters(offset)
+            .then(this.onCharList)
+            .catch(this.onError)
+
+    }
+    onCharList = (newCharList) => {
+        this.setState(({offset, charList}) => ({
+                charList: [...charList, ...newCharList], 
+                loader: false, 
+                newItemLoading: false,
+                offset: offset + 9,
+        }))
         
     }
     onError = () => {
@@ -35,12 +53,11 @@ class CharList extends React.Component {
         const imgClassNameChange = `${imgClassName}__change`;
         const items = arr.map(item => {
             return (
-                <li key = {item.id} onClick={() => this.props.onCharSelected(item.id)}className={(item.thumbnail.indexOf('image_not_available.jpg') > -1) ? imgClassNameChange : imgClassName}>
+                <li key = {item.id} onClick={() => this.props.onCharSelected(item.id)} className={(item.thumbnail.indexOf('image_not_available.jpg') > -1) ? imgClassNameChange : imgClassName}>
                     <img src={item.thumbnail} alt={item.thumbnail}/>
                     <div className="char__name">{item.name}</div>
                 </li>
-            ) 
-       
+            )
         })
         return (
             <ul className="char__grid">
@@ -50,18 +67,21 @@ class CharList extends React.Component {
     }
     
     render() {
-        const {charList, error, loader} = this.state;
+        const {charList, error, loader, offset, newItemLoading} = this.state;
         const items = this.renderItems(charList);
         const content = !(loader || error) ? items : null;
         const errorMessage = error ? <ErrorMessage /> : null;
         const spinner = loader ? <Spinner /> : null; 
-        // {(this.onChangeList) ? content.slice(10, 19) + content  : content}
         return (
             <div className="char__list">
                 {errorMessage}
                 {content}
                 {spinner}
-                <button className="button button__main button__long">
+                <button
+                     className="button button__main button__long"
+                     disabled={newItemLoading}
+                     onClick={() => this.onRequest(offset)}
+                     >
                     <div className="inner">load more</div>
                 </button>
             </div>

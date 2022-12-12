@@ -34,6 +34,7 @@ class RandomChar extends React.Component {
         .getCharacter(id)
         .then(this.onCharLoaded)
         .catch(this.onError)
+        
     }
     onError = () => {
         this.setState({
