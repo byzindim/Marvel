@@ -5,6 +5,7 @@ import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 import decoration from '../../resources/img/vision.png';
+import PropTypes from 'prop-types';
 
 class App extends React.Component { 
     state = {
@@ -39,5 +40,7 @@ class App extends React.Component {
         )
     }   
 }
-
+App.propTypes = {
+    onCharSelected: PropTypes.func.isRequired
+}
 export default App;

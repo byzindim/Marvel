@@ -10,11 +10,11 @@ class CharList extends React.Component {
         loader: true,
         error: false,
         newItemLoading: false,
-        offset: 210,
+        offset: 1560,
+        charEnded: false,
     }
     marvelService = new MarvelService();
 
-    
     componentDidMount () {
         this.onRequest();
         
@@ -33,11 +33,16 @@ class CharList extends React.Component {
 
     }
     onCharList = (newCharList) => {
+        let ended = false;
+        if(newCharList.length < 9) {
+            ended = true;
+        }
         this.setState(({offset, charList}) => ({
                 charList: [...charList, ...newCharList], 
                 loader: false, 
                 newItemLoading: false,
                 offset: offset + 9,
+                charEnded: ended
         }))
         
     }
@@ -51,9 +56,9 @@ class CharList extends React.Component {
     renderItems(arr)  {
         const imgClassName = 'char__item';
         const imgClassNameChange = `${imgClassName}__change`;
-        const items = arr.map(item => {
+        const items = arr.map((item, i) => {
             return (
-                <li key = {item.id} onClick={() => this.props.onCharSelected(item.id)} className={(item.thumbnail.indexOf('image_not_available.jpg') > -1) ? imgClassNameChange : imgClassName}>
+                <li key = {i} onClick={() => this.props.onCharSelected(item.id)} className={(item.thumbnail.indexOf('image_not_available.jpg') > -1) ? imgClassNameChange : imgClassName}>
                     <img src={item.thumbnail} alt={item.thumbnail}/>
                     <div className="char__name">{item.name}</div>
                 </li>
@@ -67,7 +72,7 @@ class CharList extends React.Component {
     }
     
     render() {
-        const {charList, error, loader, offset, newItemLoading} = this.state;
+        const {charList, error, loader, offset, newItemLoading, charEnded} = this.state;
         const items = this.renderItems(charList);
         const content = !(loader || error) ? items : null;
         const errorMessage = error ? <ErrorMessage /> : null;
@@ -80,6 +85,7 @@ class CharList extends React.Component {
                 <button
                      className="button button__main button__long"
                      disabled={newItemLoading}
+                     style={{'display': charEnded ? 'none' : 'block'} }
                      onClick={() => this.onRequest(offset)}
                      >
                     <div className="inner">load more</div>
